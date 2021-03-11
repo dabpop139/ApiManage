@@ -12,7 +12,7 @@
                 </div>
             </el-header>
             <el-container class="fheight">
-                <el-aside class="easide" width="220px">
+                <el-aside class="easide" width="230px">
                     <div class="el-scrollbar">
                         <div class="project-info">
                             <div class="project-title">
@@ -41,10 +41,11 @@
                         <div class="api-catalog">
                             <el-menu
                                 default-active="1"
+                                :default-openeds="cateOpeneds"
                                 class="api-catalog-item"
                                 text-color="#A9A9A9"
                                 background-color="#424242"
-                                active-text-color="#ffd04b">
+                                active-text-color="#FFD04B">
                                 <el-submenu :index="cate.id+``" v-for="(cate, ind) in subCates" :key="ind">
                                     <template slot="title">
                                         <el-dropdown @command="catalogOperate">
@@ -318,6 +319,7 @@ export default {
         return {
             isRouterAlive: true,
             fullscreenLoading: false,
+            cateOpeneds: [],
             keyword: '',
 
             mainTabsCurr: '1',
@@ -844,8 +846,12 @@ export default {
         },
         fetchCates(param) {
             let keyword = ''
+            let loadingInstance
             if (typeof param != 'undefined') {
                 keyword = param
+            }
+            if (keyword !='') {
+                loadingInstance = Loading.service({background: 'rgb(255 255 255 / 0)'})
             }
             COMJS.doAjax({
                 url: this.$configSite.apicomm+'apictrl/category',
@@ -860,9 +866,20 @@ export default {
                     MessageBox.alert(resp.msg, '错误 :-(', {})
                 }
                 resp = null
+                if (keyword !='') {
+                    let tempArr = []
+                    this.subCates.forEach((tab, index) => {
+                        tempArr.push(tab.id+'')
+                    })
+                    this.cateOpeneds = tempArr
+                    loadingInstance.close()
+                }
                 return false
             },
             error => {
+                if (keyword !='') {
+                    loadingInstance.close()
+                }
                 return true
             })
         },
