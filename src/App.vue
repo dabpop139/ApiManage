@@ -77,6 +77,8 @@
                                 </el-submenu>
                             </el-menu>
                         </div><!-- api-catalog -->
+                        <div class="mt-4">&nbsp;</div>
+                        <div class="mt-4">&nbsp;</div>
                     </div><!-- el-scrollbar -->
                 </el-aside>
                 <el-main class="emain">
@@ -599,6 +601,9 @@ export default {
             })
         },
         searchResult() {
+            if (this.keyword == '') {
+                this.cateOpeneds = []
+            }
             this.fetchCates(this.keyword)
         },
         renewTabName() {
