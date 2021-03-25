@@ -346,6 +346,9 @@ export default {
                 }
             },
 
+            // 缓存的API IDs数组
+            cacheApiIds: {},
+
             editCatalogId: 0,
             editCatalogName: '',
             editCatalogAct: 'add',
@@ -417,7 +420,6 @@ export default {
             if (activeName === targetName) {
                 tabs.forEach((tab, index) => {
                     if (tab.name === targetName) {
-                        localStorage.removeItem('apicache-'+tab.aid)
                         let nextTab = tabs[index + 1] || tabs[index - 1]
                         if (nextTab) {
                             activeName = nextTab.name;
@@ -537,7 +539,6 @@ export default {
         },
         openLink(aid, addtab = true) {
             let loadingInstance = Loading.service({background: 'rgb(255 255 255 / 0)'})
-            // this.resetRespone()
             
             let apicache = localStorage.getItem('apicache-'+aid)
             if (apicache) {
@@ -554,6 +555,8 @@ export default {
             response => {
                 let resp = response.data
                 if (resp.code == 1) {
+                    this.cacheApiIds[aid] = ''
+                    localStorage.setItem('cache_api_ids', JSON.stringify(this.cacheApiIds))
                     this.setTabElemData(resp.data, addtab)
                 } else {
                     MessageBox.alert(resp.msg, '错误 :-(', {})
@@ -633,16 +636,9 @@ export default {
             jsonData.rbody = this.reqBody
 
             jsonData.respraw = this.respData
-            
-            // jsonData.showRespHeaders = this.showRespHeaders
-            // jsonData.respStatus = this.respStatus
-            // jsonData.respExtime = this.respExtime
-            // jsonData.respHeader = this.respHeader
-            // jsonData.respData = this.respData
-            // jsonData.respDataJson = this.respDataJson
-            // jsonData.respDataViewMode = this.respDataViewMode
-            
             localStorage.setItem('apicache-'+this.aid, JSON.stringify(jsonData))
+
+            this.resetRespone()
 
             // 设置新的值
             this.aid = data.id
@@ -664,6 +660,7 @@ export default {
             this.reqBody = data.rbody
 
             this.respData = data.respraw
+            
             if (this.respData) {
                 let strpre = this.respData.substring(0, 1)
                 let pattern = /<\/\S+>/g
@@ -1009,6 +1006,15 @@ export default {
         error => {
             return true
         })
+
+        let allCacheApiIds = localStorage.getItem('cache_api_ids')
+        if (allCacheApiIds) {
+            let apiIds = JSON.parse(allCacheApiIds)
+            Object.keys(apiIds).forEach((key) => {
+                localStorage.removeItem('apicache-'+key)
+            })
+            localStorage.removeItem('cache_api_ids')
+        }
     },
     mounted() {
         document.addEventListener('keydown', this.keyboardEvent)
