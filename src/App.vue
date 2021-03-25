@@ -417,6 +417,7 @@ export default {
             if (activeName === targetName) {
                 tabs.forEach((tab, index) => {
                     if (tab.name === targetName) {
+                        localStorage.removeItem('apicache-'+tab.aid)
                         let nextTab = tabs[index + 1] || tabs[index - 1]
                         if (nextTab) {
                             activeName = nextTab.name;
@@ -430,6 +431,7 @@ export default {
             this.switchTab()
         },
         switchTab() {
+            this.saveToCache()
             this.editableTabs.forEach((tab, index) => {
                 if (tab.name === this.mainTabsCurr) {
                     if (tab.aid == 0) {
@@ -537,6 +539,15 @@ export default {
         openLink(aid, addtab = true) {
             let loadingInstance = Loading.service({background: 'rgb(255 255 255 / 0)'})
             this.resetRespone()
+            
+            let apicache = localStorage.getItem('apicache-'+aid)
+            if (apicache) {
+                let jsonData = JSON.parse(apicache)
+                this.setTabElemData(jsonData, addtab)
+                loadingInstance.close()
+                return
+            }
+
             COMJS.doAjax({
                 url: this.$configSite.apicomm+'apictrl/apidata',
                 data: { aid: aid },
@@ -544,49 +555,8 @@ export default {
             response => {
                 let resp = response.data
                 if (resp.code == 1) {
-                    this.aid = resp.data.id
-                    this.projectid = resp.data.projectid
-                    this.cateid = resp.data.cateid
-
-                    this.apiname = resp.data.apiname
-                    this.reqscheme = resp.data.reqscheme
-                    this.apiuri = resp.data.apiuri
-
-                    this.reqmethod = resp.data.reqmethod
-                    this.bodytype = resp.data.bodytype
-                    this.bodyrawtype = resp.data.bodyrawtype
-
-                    this.reqHeaderChk = resp.data.rheader_chk
-                    this.reqBodyChk = resp.data.rbody_chk
-
-                    this.reqHeader = resp.data.rheader
-                    this.reqBody = resp.data.rbody
-
-                    this.respData = resp.data.respraw
-                    if (this.respData) {
-                        let strpre = this.respData.substring(0, 1)
-                        let pattern = /<\/\S+>/g
-                        if (strpre == '{' || strpre =='[') {
-                            let jparse = null
-                            try {
-                                jparse = JSON.parse(this.respData)
-                            } catch (err) {
-
-                            }
-                            this.respDataJson = jparse
-                        } else if(pattern.test(this.respData)) {
-                            this.respDataViewMode = 'preview'
-                            setTimeout(() => {
-                                this.changeRespDataViewMode('preview')
-                            }, 100)
-                        }
-                    }
-
-                    if (addtab == true) {
-                        this.addTab(resp.data.apiname, this.aid)
-                    }
-
-                    this.cmModeSwitch()
+                    localStorage.setItem('apicache-'+aid, JSON.stringify(resp.data))
+                    this.setTabElemData(resp.data, addtab)
                 } else {
                     MessageBox.alert(resp.msg, '错误 :-(', {})
                 }
@@ -641,6 +611,80 @@ export default {
             this.respData = ''
             this.respDataJson = null
             this.respDataViewMode = 'raw'
+        },
+        // VueData保存到本地缓存
+        saveToCache () {
+            let apicache = localStorage.getItem('apicache-'+this.aid)
+            if (apicache) {
+                let jsonData = JSON.parse(apicache)
+                jsonData.id = this.aid
+                jsonData.projectid = this.projectid
+                jsonData.cateid = this.cateid
+
+                jsonData.apiname = this.apiname
+                jsonData.reqscheme = this.reqscheme
+                jsonData.apiuri = this.apiuri
+
+                jsonData.reqmethod = this.reqmethod
+                jsonData.bodytype = this.bodytype
+                jsonData.bodyrawtype = this.bodyrawtype
+
+                jsonData.rheader_chk = this.reqHeaderChk
+                jsonData.rbody_chk = this.reqBodyChk
+
+                jsonData.rheader = this.reqHeader
+                jsonData.rbody = this.reqBody
+
+                jsonData.respraw = this.respData
+                localStorage.setItem('apicache-'+this.aid, JSON.stringify(jsonData))
+            }
+        },
+        // 赋值到VueData
+        setTabElemData (data, addtab) {
+            this.aid = data.id
+            this.projectid = data.projectid
+            this.cateid = data.cateid
+
+            this.apiname = data.apiname
+            this.reqscheme = data.reqscheme
+            this.apiuri = data.apiuri
+
+            this.reqmethod = data.reqmethod
+            this.bodytype = data.bodytype
+            this.bodyrawtype = data.bodyrawtype
+
+            this.reqHeaderChk = data.rheader_chk
+            this.reqBodyChk = data.rbody_chk
+
+            this.reqHeader = data.rheader
+            this.reqBody = data.rbody
+
+            this.respData = data.respraw
+            if (this.respData) {
+                let strpre = this.respData.substring(0, 1)
+                let pattern = /<\/\S+>/g
+                if (strpre == '{' || strpre =='[') {
+                     // JSON查看模式
+                    let jparse = null
+                    try {
+                        jparse = JSON.parse(this.respData)
+                    } catch (err) {
+
+                    }
+                    this.respDataJson = jparse
+                } else if(pattern.test(this.respData)) {
+                    this.respDataViewMode = 'preview' // HTML查看模式
+                    setTimeout(() => {
+                        this.changeRespDataViewMode('preview')
+                    }, 100)
+                }
+            }
+
+            if (addtab == true) {
+                this.addTab(data.apiname, this.aid)
+            }
+
+            this.cmModeSwitch()
         },
         // 新建API
         createNew() {
