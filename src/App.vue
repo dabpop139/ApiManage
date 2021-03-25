@@ -537,7 +537,7 @@ export default {
         },
         openLink(aid, addtab = true) {
             let loadingInstance = Loading.service({background: 'rgb(255 255 255 / 0)'})
-            this.resetRespone()
+            // this.resetRespone()
             
             let apicache = localStorage.getItem('apicache-'+aid)
             if (apicache) {
@@ -633,6 +633,15 @@ export default {
             jsonData.rbody = this.reqBody
 
             jsonData.respraw = this.respData
+            
+            // jsonData.showRespHeaders = this.showRespHeaders
+            // jsonData.respStatus = this.respStatus
+            // jsonData.respExtime = this.respExtime
+            // jsonData.respHeader = this.respHeader
+            // jsonData.respData = this.respData
+            // jsonData.respDataJson = this.respDataJson
+            // jsonData.respDataViewMode = this.respDataViewMode
+            
             localStorage.setItem('apicache-'+this.aid, JSON.stringify(jsonData))
 
             // 设置新的值
