@@ -431,7 +431,6 @@ export default {
             this.switchTab()
         },
         switchTab() {
-            this.saveToCache()
             this.editableTabs.forEach((tab, index) => {
                 if (tab.name === this.mainTabsCurr) {
                     if (tab.aid == 0) {
@@ -555,7 +554,6 @@ export default {
             response => {
                 let resp = response.data
                 if (resp.code == 1) {
-                    localStorage.setItem('apicache-'+aid, JSON.stringify(resp.data))
                     this.setTabElemData(resp.data, addtab)
                 } else {
                     MessageBox.alert(resp.msg, '错误 :-(', {})
@@ -612,35 +610,32 @@ export default {
             this.respDataJson = null
             this.respDataViewMode = 'raw'
         },
-        // VueData保存到本地缓存
-        saveToCache () {
-            let apicache = localStorage.getItem('apicache-'+this.aid)
-            if (apicache) {
-                let jsonData = JSON.parse(apicache)
-                jsonData.id = this.aid
-                jsonData.projectid = this.projectid
-                jsonData.cateid = this.cateid
-
-                jsonData.apiname = this.apiname
-                jsonData.reqscheme = this.reqscheme
-                jsonData.apiuri = this.apiuri
-
-                jsonData.reqmethod = this.reqmethod
-                jsonData.bodytype = this.bodytype
-                jsonData.bodyrawtype = this.bodyrawtype
-
-                jsonData.rheader_chk = this.reqHeaderChk
-                jsonData.rbody_chk = this.reqBodyChk
-
-                jsonData.rheader = this.reqHeader
-                jsonData.rbody = this.reqBody
-
-                jsonData.respraw = this.respData
-                localStorage.setItem('apicache-'+this.aid, JSON.stringify(jsonData))
-            }
-        },
         // 赋值到VueData
         setTabElemData (data, addtab) {
+            // 缓存现在的值
+            let jsonData = {}
+            jsonData.id = this.aid
+            jsonData.projectid = this.projectid
+            jsonData.cateid = this.cateid
+
+            jsonData.apiname = this.apiname
+            jsonData.reqscheme = this.reqscheme
+            jsonData.apiuri = this.apiuri
+
+            jsonData.reqmethod = this.reqmethod
+            jsonData.bodytype = this.bodytype
+            jsonData.bodyrawtype = this.bodyrawtype
+
+            jsonData.rheader_chk = this.reqHeaderChk
+            jsonData.rbody_chk = this.reqBodyChk
+
+            jsonData.rheader = this.reqHeader
+            jsonData.rbody = this.reqBody
+
+            jsonData.respraw = this.respData
+            localStorage.setItem('apicache-'+this.aid, JSON.stringify(jsonData))
+
+            // 设置新的值
             this.aid = data.id
             this.projectid = data.projectid
             this.cateid = data.cateid
