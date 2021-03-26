@@ -33,7 +33,7 @@
                         <div class="mclear"></div>
                         <div class="api-toolbar">
                             <div class="right-opts">
-                                <a href="javascript:;"><i class="el-icon el-icon-folder-add" @click="catalogOperate([0, '', 'add'])"></i></a>&nbsp;
+                                <a href="javascript:;"><i class="el-icon el-icon-folder-add" @click="catalogOperate([0, '', 0, 'add'])"></i></a>&nbsp;
                                 <a href="javascript:;" @click="createNew"><i class="el-icon el-icon-edit"></i></a>
                             </div>
                             <div class="mclear"></div>
@@ -53,8 +53,8 @@
                                                 <i class="el-icon-folder"></i>
                                             </span>
                                             <el-dropdown-menu slot="dropdown" class="api-catalog-dropsele">
-                                                <el-dropdown-item :command="[cate.id, cate.name, 'edit']">编辑</el-dropdown-item>
-                                                <el-dropdown-item :command="[cate.id, cate.name, 'del']">删除</el-dropdown-item>
+                                                <el-dropdown-item :command="[cate.id, cate.name, cate.ord, 'edit']">编辑</el-dropdown-item>
+                                                <el-dropdown-item :command="[cate.id, cate.name, cate.ord, 'del']">删除</el-dropdown-item>
                                             </el-dropdown-menu>
                                         </el-dropdown>
                                         <span>{{cate.name}}</span>
@@ -246,7 +246,17 @@
                 </el-main>
 
                 <el-dialog title="分类名称" width="20%" :visible.sync="catalogDialogVisible">
-                    <div><el-input size="small" v-model="editCatalogName" autocomplete="off"></el-input></div>
+                    <div class="el-row">
+                        <div class="el-col el-col-14">
+                            <el-input size="small" v-model="editCatalogName" autocomplete="off"></el-input>
+                        </div>
+                        <div class="el-col el-col-4">
+                            <div class="pl-3 pt-1">排序：</div>
+                        </div>
+                        <div class="el-col el-col-6">
+                            <el-input size="small" v-model="editCatalogOrd" autocomplete="off"></el-input>
+                        </div>
+                    </div>
                     <div slot="footer" class="dialog-footer">
                         <el-button size="small" @click="catalogDialogAct('cancel')">取 消</el-button>
                         <el-button type="primary" size="small" @click="catalogDialogAct('submit')">确 定</el-button>
@@ -351,6 +361,7 @@ export default {
 
             editCatalogId: 0,
             editCatalogName: '',
+            editCatalogOrd: 0,
             editCatalogAct: 'add',
             subCates: {},
 
@@ -449,11 +460,13 @@ export default {
         catalogOperate(arr) {
             let cateid = arr[0]
             let name   = arr[1]
-            let act    = arr[2]
+            let ord    = arr[2]
+            let act    = arr[3]
             // act: add del edit
             
             this.editCatalogId = cateid
             this.editCatalogName = name
+            this.editCatalogOrd = ord
             this.editCatalogAct = act
 
             if (act == 'del') {
@@ -479,6 +492,7 @@ export default {
             let projectid = this.projectid
             let cateid = this.editCatalogId
             let name = this.editCatalogName
+            let ord = this.editCatalogOrd
 
             if (actname != 'del' && name.trim() == '') {
                 Message.warning('分类名称不能为空')
@@ -492,6 +506,7 @@ export default {
                     cateid: cateid,
                     act: actname,
                     name: name,
+                    ord: ord,
                 },
             }, 'POST',
             response => {
