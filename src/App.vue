@@ -684,6 +684,7 @@ export default {
                     let jparse = null
                     try {
                         jparse = JSON.parse(this.respData)
+                        Object.freeze(jparse) // 冻结对象节省性能
                     } catch (err) {
 
                     }
@@ -754,6 +755,7 @@ export default {
                         let jparse = null
                         try {
                             jparse = JSON.parse(this.respData)
+                            Object.freeze(jparse) // 冻结对象节省性能
                         } catch (err) {
 
                         }
@@ -815,6 +817,7 @@ export default {
                     let jparse = null
                     try {
                         jparse = JSON.parse(this.respData)
+                        Object.freeze(jparse) // 冻结对象节省性能
                     } catch (err) {
 
                     }
