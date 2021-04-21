@@ -7,7 +7,7 @@ html,body{
     font-weight:400;background:#FFFFFF;font-size:14px;color:#616161;
     height: 100%;
     overflow: hidden;
-    webkit-tap-highlight-color:#222222;
+    -webkit-tap-highlight-color:#222222;
 }
 
 textarea{font-family: "Microsoft YaHei","微软雅黑",Arial,sans-serif;}
@@ -156,7 +156,7 @@ button:focus,button:hover{text-decoration:none;outline:0 !important;}
 .eheader .elogo button{font-size: 14px; border: 0px; background-color:#F47023;}
 
 .easide {height: 100%; background-color: #424242;}
-.easide .project-info{border-bottom:4px solid #2e2e2e;padding:13px;color:#FFFFFF;}
+.easide .project-info{border-bottom:4px solid #2e2e2e;padding:8px 13px;color:#FFFFFF;}
 .easide .project-info .project-title{min-height: 20px;}
 .easide .project-info .project-title .el-select .el-input input{ color:#FFFFFF; font-size: 15px; border: 0px; background: none;}
 .easide .project-info .name{font-size: 15px;}
