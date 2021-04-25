@@ -184,7 +184,7 @@ button:focus,button:hover{text-decoration:none;outline:0 !important;}
 .easide .api-catalog .el-menu{border-right: 0px;}
 .easide .api-catalog .el-menu .el-submenu__title{font-size: 13px;height:40px;line-height:40px;padding-left:8px !important;}
 .easide .api-catalog .el-menu .el-submenu__title .el-dropdown{margin-top: -8px;}
-.easide .api-catalog .el-menu .el-menu-item{font-size: 12px;height: 32px;line-height: 32px;padding-left:20px !important;}
+.easide .api-catalog .el-menu .el-menu-item{font-size: 12px;height: 32px;line-height: 32px;padding-left:10px !important;}
 .easide .api-catalog .el-menu .el-menu-item .el-icon{font-size: 13px;}
 .easide .api-catalog .method{font-weight:bolder;margin-right:5px;display:inline-block;transform:scale(.8);color:#009688;text-align:center;width:30px;cursor:pointer}
 .easide .api-catalog .name{display:inline-block;width:132px;overflow:hidden;text-overflow:ellipsis;cursor:pointer}

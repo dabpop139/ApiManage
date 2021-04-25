@@ -282,7 +282,9 @@ import { codemirror } from 'vue-codemirror'
 import JsonViewer from 'vue-json-viewer'
 
 import 'codemirror/lib/codemirror.css'
+import 'codemirror/addon/comment/comment.js'
 import 'codemirror/mode/javascript/javascript.js'
+import 'codemirror/keymap/sublime.js'
 
 export default {
     name: 'app',
@@ -351,9 +353,7 @@ export default {
                 lineNumbers: true,
                 line: true,
                 lineWrapping: true,
-                extraKeys: {
-                    'Ctrl-/': 'toggleComment' // 没用
-                }
+                keyMap: 'sublime',
             },
 
             // 缓存的API IDs数组
@@ -978,7 +978,7 @@ export default {
             this.respDataViewMode = mode
         },
         keyboardEvent(event) {
-            if (event.keyCode === 83 && event.ctrlKey) {
+            if (event.keyCode == 83 && event.ctrlKey) {
                 this.saveForm()
                 event.preventDefault()
                 event.returnValue = false
@@ -991,6 +991,12 @@ export default {
                 event.returnValue = false
                 return false
             }
+            
+            // if (event.keyCode == 191 && event.ctrlKey) {
+            //     window.codeMirrorInst.keyMap = 'sublime'
+            //     window.codeMirrorInst.toggleComment()
+            //     return false
+            // }
         },
         reload() {
             // 重新加载 刷新页面
