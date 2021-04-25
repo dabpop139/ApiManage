@@ -119,7 +119,13 @@
                                     <div class="request-uri">
                                         <el-row>
                                             <el-col :span="22">
-                                                <el-input placeholder="请输入接口地址" v-model="apiuri" spellcheck="false" class="input-with-select">
+                                                 <el-autocomplete
+                                                    class="input-with-select"
+                                                    v-model="apiuri"
+                                                    :fetch-suggestions="queryApiuri"
+                                                    placeholder="请输入接口地址"
+                                                    spellcheck="false"
+                                                >
                                                     <el-select v-model="reqmethod" slot="prepend" placeholder="请选择">
                                                         <el-option label="POST" value="POST"></el-option>
                                                         <el-option label="GET" value="GET"></el-option>
@@ -135,7 +141,7 @@
                                                         <el-option label="VIEW" value="VIEW"></el-option>
                                                     </el-select>
                                                     <el-button slot="append" icon="el-icon-s-promotion" @click="sendForm">发送</el-button>
-                                                </el-input>
+                                                </el-autocomplete>
                                             </el-col>
                                             <el-col :span="2">
                                                 <div class="pl-2"><el-button icon="el-icon-s-claim" @click="saveForm">保存</el-button></div>
@@ -276,7 +282,7 @@ import {
     Loading, Message, MessageBox, Dialog,
     Menu, Submenu, MenuItemGroup, MenuItem,
     Tabs, TabPane, Card, Collapse, CollapseItem,
-    Dropdown, DropdownMenu, DropdownItem, Button, ButtonGroup, Input, Select, Option, Checkbox, Tag,
+    Dropdown, DropdownMenu, DropdownItem, Button, ButtonGroup, Input, Autocomplete, Select, Option, Checkbox, Tag,
 } from 'element-ui'
 import { codemirror } from 'vue-codemirror'
 import JsonViewer from 'vue-json-viewer'
@@ -316,6 +322,7 @@ export default {
         elButton: Button,
         elButtonGroup: ButtonGroup,
         elInput: Input,
+        elAutocomplete: Autocomplete,
         elSelect: Select,
         elOption: Option,
         elCheckbox: Checkbox,
@@ -393,7 +400,10 @@ export default {
             respHeader: '',
             respData: '',
             respDataJson: null,
-            respDataViewMode: 'raw'
+            respDataViewMode: 'raw',
+
+            apiExtra: '',
+            apiuriSuggesData: []
         }
     },
     methods: {
@@ -618,6 +628,8 @@ export default {
 
             this.reqHeader = ''
             this.reqBody = ''
+
+            this.apiuriSuggesData = []
         },
         resetRespone() {
             this.showRespHeaders = false
@@ -651,6 +663,7 @@ export default {
             jsonData.rbody = this.reqBody
 
             jsonData.respraw = this.respData
+            jsonData.extra = this.apiExtra
             localStorage.setItem('apicache-'+this.aid, JSON.stringify(jsonData))
 
             this.resetRespone()
@@ -675,6 +688,8 @@ export default {
             this.reqBody = data.rbody
 
             this.respData = data.respraw
+            this.apiExtra = data.extra
+            this.apiuriSuggesData = []
             
             if (this.respData) {
                 let strpre = this.respData.substring(0, 1)
@@ -694,6 +709,21 @@ export default {
                     setTimeout(() => {
                         this.changeRespDataViewMode('preview')
                     }, 100)
+                }
+            }
+
+            if (this.apiExtra) {
+                let jparse = null
+                jparse = JSON.parse(this.apiExtra)
+                if (typeof jparse.apiurl_history != 'undefined') {
+                    let suggesData = []
+                    jparse.apiurl_history.forEach((item, index) => {
+                        suggesData.push({
+                            value: item
+                        })
+                    })
+                    Object.freeze(suggesData) // 冻结对象节省性能
+                    this.apiuriSuggesData = suggesData
                 }
             }
 
@@ -950,6 +980,9 @@ export default {
                 }
                 return true
             })
+        },
+        queryApiuri(queryString, cb) {
+            cb(this.apiuriSuggesData)
         },
         cmModeSwitch() {
             // if (this.bodyrawtype == 'json') {

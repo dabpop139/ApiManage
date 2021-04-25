@@ -193,9 +193,10 @@ button:focus,button:hover{text-decoration:none;outline:0 !important;}
 .main-area .project-title .el-select .el-input{width:130px;}
 .main-area .project-title .el-select .el-input input{font-size:13px;}
 .main-area .panel-content{margin-top: 15px;}
+.main-area .panel-content .request-uri .input-with-select{width: 100%;}
 .main-area .panel-content .request-uri .input-with-select .el-select .el-input{width: 130px;}
 .main-area .panel-content .request-uri .input-with-select .el-select .el-input input{color: #F47B34;}
-.main-area .panel-content .request-uri .input-with-select>.el-input__inner{font-size: 13px;}
+.main-area .panel-content .request-uri .input-with-select>.el-input-group>.el-input__inner{font-size: 13px;}
 
 .main-area .panel-content .request-payload .panel-requset .box01{margin-top: 10px;}
 .main-area .panel-content .request-payload .panel-requset .box01 .v1{float: left;}
