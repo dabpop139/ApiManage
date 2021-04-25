@@ -349,7 +349,7 @@ export default {
 
             cmOptions: {
                 tabSize: 4,
-                mode: 'text/javascript',
+                mode: 'javascript',
                 lineNumbers: true,
                 line: true,
                 lineWrapping: true,
@@ -952,13 +952,13 @@ export default {
             })
         },
         cmModeSwitch() {
-            if (this.bodyrawtype == 'json') {
-                this.cmOptions.mode = 'application/json'
-            } else if(this.bodyrawtype == 'javascript') {
-                this.cmOptions.mode = 'text/javascript'
-            } else {
-                this.cmOptions.mode = 'text/javascript'
-            }
+            // if (this.bodyrawtype == 'json') {
+            //     this.cmOptions.mode = 'json'
+            // } else if(this.bodyrawtype == 'javascript') {
+            //     this.cmOptions.mode = 'javascript'
+            // } else {
+            //     this.cmOptions.mode = 'javascript'
+            // }
         },
         bodytypeChange() {
             this.cmModeSwitch()
