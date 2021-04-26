@@ -402,7 +402,6 @@ export default {
             respDataJson: null,
             respDataViewMode: 'raw',
 
-            apiExtra: '',
             apiuriSuggesData: []
         }
     },
@@ -582,6 +581,18 @@ export default {
                 if (resp.code == 1) {
                     this.cacheApiIds[aid] = ''
                     localStorage.setItem('cache_api_ids', JSON.stringify(this.cacheApiIds))
+                    // 处理存储在extra字段里的数据
+                    resp.data.apiuri_suggesdata = []
+                    if (resp.data.extra != undefined) {
+                        let extraData = JSON.parse(resp.data.extra)
+                        if (extraData.apiurl_history != undefined) {
+                            extraData.apiurl_history.forEach((item, index) => {
+                                resp.data.apiuri_suggesdata.push({value: item})
+                            })
+                            // console.log(resp.data.apiuri_suggesdata)
+                        }
+                        delete resp.data.extra
+                    }
                     this.setTabElemData(resp.data, addtab)
                 } else {
                     MessageBox.alert(resp.msg, '错误 :-(', {})
@@ -663,7 +674,7 @@ export default {
             jsonData.rbody = this.reqBody
 
             jsonData.respraw = this.respData
-            jsonData.extra = this.apiExtra
+            jsonData.apiuri_suggesdata = this.apiuriSuggesData
             localStorage.setItem('apicache-'+this.aid, JSON.stringify(jsonData))
 
             this.resetRespone()
@@ -688,8 +699,7 @@ export default {
             this.reqBody = data.rbody
 
             this.respData = data.respraw
-            this.apiExtra = data.extra
-            this.apiuriSuggesData = []
+            this.apiuriSuggesData = data.apiuri_suggesdata
             
             if (this.respData) {
                 let strpre = this.respData.substring(0, 1)
@@ -709,21 +719,6 @@ export default {
                     setTimeout(() => {
                         this.changeRespDataViewMode('preview')
                     }, 100)
-                }
-            }
-
-            if (this.apiExtra) {
-                let jparse = null
-                jparse = JSON.parse(this.apiExtra)
-                if (typeof jparse.apiurl_history != 'undefined') {
-                    let suggesData = []
-                    jparse.apiurl_history.forEach((item, index) => {
-                        suggesData.push({
-                            value: item
-                        })
-                    })
-                    Object.freeze(suggesData) // 冻结对象节省性能
-                    this.apiuriSuggesData = suggesData
                 }
             }
 
@@ -877,6 +872,13 @@ export default {
         sendForm() {
             // console.log('sendForm')
             // return
+            this.apiuriSuggesData.forEach((item, index) => {
+                if (item.value == this.apiuri) {
+                    this.apiuriSuggesData.splice(index, 1)
+                }
+            })
+            this.apiuriSuggesData.unshift({value: this.apiuri})
+
             if (this.reqscheme == 'HTTP') {
                 this.sendHTTP()
             }
@@ -1024,12 +1026,6 @@ export default {
                 event.returnValue = false
                 return false
             }
-            
-            // if (event.keyCode == 191 && event.ctrlKey) {
-            //     window.codeMirrorInst.keyMap = 'sublime'
-            //     window.codeMirrorInst.toggleComment()
-            //     return false
-            // }
         },
         reload() {
             // 重新加载 刷新页面
