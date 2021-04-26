@@ -402,7 +402,8 @@ export default {
             respDataJson: null,
             respDataViewMode: 'raw',
 
-            apiuriSuggesData: []
+            apiuriSuggesData: [],
+            apiuriSuggesTimer: 0
         }
     },
     methods: {
@@ -873,7 +874,7 @@ export default {
             // console.log('sendForm')
             // return
             this.apiuriSuggesData.forEach((item, index) => {
-                if (item.value == this.apiuri) {
+                if (item.value == this.apiuri || index > 10) {
                     this.apiuriSuggesData.splice(index, 1)
                 }
             })
@@ -985,6 +986,10 @@ export default {
         },
         queryApiuri(queryString, cb) {
             cb(this.apiuriSuggesData)
+            clearTimeout(this.apiuriSuggesTimer)
+            this.apiuriSuggesTimer = setTimeout(() => { // 超过一定时间就自动关闭
+                cb([])
+            }, 10000)
         },
         cmModeSwitch() {
             // if (this.bodyrawtype == 'json') {
