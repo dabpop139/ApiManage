@@ -276,6 +276,7 @@
 <script>
 /* eslint-disable */
 import COMJS from '@/libs/common'
+import utils from '@/libs/utils'
 import {
     Container, Header, Aside, Main,
     Row, Col,
@@ -710,7 +711,7 @@ export default {
                     let jparse = null
                     try {
                         jparse = JSON.parse(this.respData)
-                        Object.freeze(jparse) // 冻结对象节省性能
+                        utils.deepFreeze(jparse) // 冻结对象节省性能
                     } catch (err) {
 
                     }
@@ -781,7 +782,7 @@ export default {
                         let jparse = null
                         try {
                             jparse = JSON.parse(this.respData)
-                            Object.freeze(jparse) // 冻结对象节省性能
+                            utils.deepFreeze(jparse) // 冻结对象节省性能
                         } catch (err) {
 
                         }
@@ -843,7 +844,7 @@ export default {
                     let jparse = null
                     try {
                         jparse = JSON.parse(this.respData)
-                        Object.freeze(jparse) // 冻结对象节省性能
+                        utils.deepFreeze(jparse) // 冻结对象节省性能
                     } catch (err) {
 
                     }
@@ -962,7 +963,7 @@ export default {
                 let resp = response.data
                 if (resp.code == 1) {
                     // this.projectname = resp.data.project.name
-                    this.subCates = resp.data.subcates
+                    this.subCates = utils.deepFreeze(resp.data.subcates)
                 } else {
                     MessageBox.alert(resp.msg, '错误 :-(', {})
                 }
@@ -1031,6 +1032,11 @@ export default {
                 event.returnValue = false
                 return false
             }
+            
+            if (event.keyCode == 81 && event.altKey) {
+                this.removeTab(this.mainTabsCurr)
+                return false
+            }
         },
         reload() {
             // 重新加载 刷新页面
@@ -1076,7 +1082,7 @@ export default {
     },
     mounted() {
         document.addEventListener('keydown', this.keyboardEvent)
-    }
+    },
 }
 </script>
 
