@@ -1026,7 +1026,7 @@ export default {
                 return false
             }
 
-            if (event.keyCode == 13 && event.ctrlKey) {
+            if (event.keyCode == 13 && event.altKey) {
                 this.sendForm()
                 event.preventDefault()
                 event.returnValue = false
