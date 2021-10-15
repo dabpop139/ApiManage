@@ -150,8 +150,22 @@
                                         </el-row>
                                     </div>
 
-                                    <el-tabs v-model="panelActive" class="request-payload mt-1">
-                                        <el-tab-pane label="模拟" name="request" class="panel-requset">
+                                    <div class="request-payload mt-1">
+                                        <div class="panel-docs">
+                                            <el-collapse v-model="collapseDocsAcitves" class="collapse-box">
+                                                <el-collapse-item name="doc-body">
+                                                    <template slot="title">
+                                                        <el-tag size="medium" type="warning">文档</el-tag>
+                                                    </template>
+                                                    <div class="mt-1">
+                                                        <codemirror v-model="docBody" :options="docCmOptions" height="20" />
+                                                    </div>
+                                                </el-collapse-item>
+                                            </el-collapse>
+                                        </div>
+
+                                        <div class="panel-requset">
+                                            
                                             <div class="box01">
                                                 <div class="v1">
                                                     <el-checkbox label="Header" v-model="reqHeaderChk"></el-checkbox>
@@ -206,14 +220,8 @@
                                                     </div>
                                                 </el-collapse-item>
                                             </el-collapse>
-                                            
-                                        </el-tab-pane>
-                                        <el-tab-pane label="文档" name="docs" class="panel-docs">
-                                            <div class="mt-1">
-                                                <codemirror v-model="docBody" :options="docCmOptions" height="20" />
-                                            </div>
-                                        </el-tab-pane>
-                                    </el-tabs>
+                                        </div><!-- panel-requset -->
+                                    </div><!-- request-payload -->
 
                                     <div class="request-response">
                                         <el-card class="box-card">
@@ -400,6 +408,7 @@ export default {
 
             panelActive: 'request',
             collapseAcitves: ['req-header', 'req-body'],
+            collapseDocsAcitves: [],
 
             reqHeaderChk: true,
             reqBodyChk: true,
