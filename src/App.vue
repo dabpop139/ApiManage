@@ -1067,13 +1067,11 @@ export default {
         },
         collapseDocsChange(activeNames) {
             if (activeNames.indexOf('doc-body') > -1) {
-                this.$refs.docBodyCodemirrorRef.forEach((item, index) => {
-                    try {
-                        setTimeout(() => {item.codemirror.refresh()}, 50)
-                    } catch (error) {
-                        
-                    }
-                })
+                try {
+                    setTimeout(() => { this.$refs.docBodyCodemirrorRef.codemirror.refresh() }, 50)
+                } catch (error) {
+                    
+                }
             }
         },
         keyboardEvent(event) {
