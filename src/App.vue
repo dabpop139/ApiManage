@@ -95,6 +95,15 @@
                         >
                             <div class="main-area panel" :elem-index="index">
                                 <div class="panel-title">
+                                    <el-row v-if="helpTipShow">
+                                        <div class="mb-2">
+                                            <el-alert
+                                                title="快捷键：Ctrl+S 保存　Alt+Enter 发送　Alt+Q 关闭标签"
+                                                type="info"
+                                                show-icon>
+                                            </el-alert>
+                                        </div>
+                                    </el-row>
                                     <el-row>
                                         <el-col :span="18">
                                             <div class="project-title">
@@ -152,13 +161,13 @@
 
                                     <div class="request-payload mt-1">
                                         <div class="panel-docs">
-                                            <el-collapse v-model="collapseDocsAcitves" class="collapse-box">
+                                            <el-collapse v-model="collapseDocsAcitves" @change="collapseDocsChange" class="collapse-box">
                                                 <el-collapse-item name="doc-body">
                                                     <template slot="title">
                                                         <el-tag size="medium" type="warning">文档</el-tag>
                                                     </template>
                                                     <div class="mt-1">
-                                                        <codemirror v-model="docBody" :options="docCmOptions" height="20" />
+                                                        <codemirror v-model="docBody" :options="docCmOptions" ref="docBodyCodemirrorRef" height="20" />
                                                     </div>
                                                 </el-collapse-item>
                                             </el-collapse>
@@ -209,7 +218,7 @@
                                                         </el-select>
                                                     </template>
                                                     <div>
-                                                        <codemirror v-model="reqBody" :options="cmOptions" height="6" />
+                                                        <codemirror v-model="reqBody" :options="cmOptions" ref="reqBodyCodemirrorRef" height="6" />
                                                         <!-- <el-input
                                                             type="textarea"
                                                             :autosize="{minRows: 4, maxRows: 100}"
@@ -293,7 +302,7 @@ import {
     Loading, Message, MessageBox, Dialog,
     Menu, Submenu, MenuItemGroup, MenuItem,
     Tabs, TabPane, Card, Collapse, CollapseItem,
-    Dropdown, DropdownMenu, DropdownItem, Button, ButtonGroup, Input, Autocomplete, Select, Option, Checkbox, Tag,
+    Dropdown, DropdownMenu, DropdownItem, Button, ButtonGroup, Input, Autocomplete, Select, Option, Checkbox, Tag, Alert,
 } from 'element-ui'
 import { codemirror } from 'vue-codemirror'
 import JsonViewer from 'vue-json-viewer'
@@ -338,6 +347,7 @@ export default {
         elOption: Option,
         elCheckbox: Checkbox,
         elTag: Tag,
+        elAlert: Alert,
 
         codemirror,
         JsonViewer,
@@ -364,6 +374,7 @@ export default {
             ],
             tabIndex: 1,
             catalogDialogVisible: false,
+            helpTipShow: 1,
 
             cmOptions: {
                 tabSize: 4,
@@ -435,6 +446,8 @@ export default {
             this.fetchCates()
         },
         addTab(targetName, aid = 0) {
+            // 关闭帮助提示
+            this.helpTipShow = 0
             if (aid != 0) {
                 let hasIs = false
                 this.editableTabs.forEach((tab, index) => {
@@ -663,7 +676,7 @@ export default {
 
             this.reqHeader = ''
             this.reqBody = ''
-            this.docbody = ''
+            this.docBody = ''
 
             this.apiuriSuggesData = []
         },
@@ -1043,6 +1056,17 @@ export default {
                 }, 200)
             }
             this.respDataViewMode = mode
+        },
+        collapseDocsChange(activeNames) {
+            if (activeNames.indexOf('doc-body') > -1) {
+                this.$refs.docBodyCodemirrorRef.forEach((item, index) => {
+                    try {
+                        setTimeout(() => {item.codemirror.refresh()}, 50)
+                    } catch (error) {
+                        
+                    }
+                })
+            }
         },
         keyboardEvent(event) {
             if (event.keyCode == 83 && event.ctrlKey) {
