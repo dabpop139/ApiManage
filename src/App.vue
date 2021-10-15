@@ -93,181 +93,182 @@
                             :label="etabItem.title"
                             :name="etabItem.name"
                         >
-                            <div class="main-area panel" :elem-index="index">
-                                <div class="panel-title">
-                                    <el-row v-if="helpTipShow">
-                                        <div class="mb-2">
-                                            <el-alert
-                                                title="快捷键：Ctrl+S 保存　Alt+Enter 发送　Alt+Q 关闭标签"
-                                                type="info"
-                                                show-icon>
-                                            </el-alert>
-                                        </div>
-                                    </el-row>
-                                    <el-row>
-                                        <el-col :span="18">
-                                            <div class="project-title">
-                                                <el-input size="small" placeholder="请输接口名称" v-model="apiname" class="input-with-select">
-                                                    <el-select v-model="reqscheme" slot="prepend" placeholder="请选择">
-                                                        <el-option label="HTTP" value="HTTP"></el-option>
-                                                        <el-option label="WEBSOCKET" value="WEBSOCKET"></el-option>
-                                                    </el-select>
-                                                </el-input>
-                                            </div>
-                                        </el-col>
-                                        <el-col :span="6" class="pl-3">
-                                            分类：
-                                            <el-select size="small" v-model="cateid" placeholder="请选择">
-                                                <el-option label="请选择" value="0"></el-option>
-                                                <el-option v-for="(cate, idx) in subCates" :key="idx" :label="cate.name" :value="cate.id"></el-option>
-                                            </el-select>
-                                        </el-col>
-                                    </el-row>
-                                </div><!-- panel-title -->
-                                <div class="panel-content">
-                                    <div class="request-uri">
-                                        <el-row>
-                                            <el-col :span="22">
-                                                 <el-autocomplete
-                                                    class="input-with-select"
-                                                    v-model="apiuri"
-                                                    :fetch-suggestions="queryApiuri"
-                                                    placeholder="请输入接口地址"
-                                                    spellcheck="false"
-                                                >
-                                                    <el-select v-model="reqmethod" slot="prepend" placeholder="请选择">
-                                                        <el-option label="POST" value="POST"></el-option>
-                                                        <el-option label="GET" value="GET"></el-option>
-                                                        <el-option label="PUT" value="PUT"></el-option>
-                                                        <el-option label="PATCH" value="PATCH"></el-option>
-                                                        <el-option label="DELETE" value="DELETE"></el-option>
-                                                        <el-option label="COPY" value="COPY"></el-option>
-                                                        <el-option label="HEAD" value="HEAD"></el-option>
-                                                        <el-option label="OPTIONS" value="OPTIONS"></el-option>
-                                                        <el-option label="LINK" value="LINK"></el-option>
-                                                        <el-option label="UNLINK" value="UNLINK"></el-option>
-                                                        <el-option label="PROPFIND" value="PROPFIND"></el-option>
-                                                        <el-option label="VIEW" value="VIEW"></el-option>
-                                                    </el-select>
-                                                    <el-button slot="append" icon="el-icon-s-promotion" @click="sendForm">发送</el-button>
-                                                </el-autocomplete>
-                                            </el-col>
-                                            <el-col :span="2">
-                                                <div class="pl-2"><el-button icon="el-icon-s-claim" @click="saveForm">保存</el-button></div>
-                                            </el-col>
-                                            <div class="mclear"></div>
-                                        </el-row>
-                                    </div>
-
-                                    <div class="request-payload mt-1">
-                                        <div class="panel-docs">
-                                            <el-collapse v-model="collapseDocsAcitves" @change="collapseDocsChange" class="collapse-box">
-                                                <el-collapse-item name="doc-body">
-                                                    <template slot="title">
-                                                        <el-tag size="medium" type="warning">文档</el-tag>
-                                                    </template>
-                                                    <div class="mt-1">
-                                                        <codemirror v-model="docBody" :options="docCmOptions" ref="docBodyCodemirrorRef" height="20" />
-                                                    </div>
-                                                </el-collapse-item>
-                                            </el-collapse>
-                                        </div>
-
-                                        <div class="panel-requset">
-                                            
-                                            <div class="box01">
-                                                <div class="v1">
-                                                    <el-checkbox label="Header" v-model="reqHeaderChk"></el-checkbox>
-                                                    <el-checkbox label="Body" v-model="reqBodyChk"></el-checkbox>
-                                                </div>
-                                                <div class="v2">
-                                                    <el-select size="mini" v-model="bodytype" placeholder="请选择">
-                                                        <el-option label="x-www-form-urlencoded" value="x-www-form-urlencoded"></el-option>
-                                                        <el-option label="form-data" value="form-data"></el-option>
-                                                        <el-option label="raw" value="raw"></el-option>
-                                                    </el-select>
-                                                </div>
-                                                <div class="mclear"></div>
-                                            </div>
-
-                                            <el-collapse v-model="collapseAcitves" class="collapse-box">
-                                                <el-collapse-item name="req-header" v-if="reqHeaderChk">
-                                                    <template slot="title">
-                                                        <el-tag size="medium">Header</el-tag>
-                                                    </template>
-                                                    <div>
-                                                        <el-input
-                                                            type="textarea"
-                                                            :autosize="{minRows: 4, maxRows: 100}"
-                                                            spellcheck="false"
-                                                            placeholder="请输入内容"
-                                                            v-model="reqHeader">
-                                                        </el-input>
-                                                    </div>
-                                                </el-collapse-item>
-                                                <el-collapse-item name="req-body" class="req-body" v-if="reqBodyChk">
-                                                    <template slot="title">
-                                                        <el-tag size="medium" type="success" class="mr-2">Body</el-tag>
-                                                        <el-select size="mini" v-model="bodyrawtype" placeholder="请选择" @change="bodytypeChange" v-if="bodytype=='raw'">
-                                                            <el-option label="JSON (application/json)" value="json"></el-option>
-                                                            <el-option label="XML (text/xml)" value="xml"></el-option>
-                                                            <el-option label="JavaScript (application/javascript)" value="javascript"></el-option>
-                                                            <el-option label="TEXT (text/plain)" value="plain"></el-option>
-                                                            <el-option label="HTML (text/html)" value="html"></el-option>
-                                                            <el-option label="TEXT" value="text"></el-option>
-                                                        </el-select>
-                                                    </template>
-                                                    <div>
-                                                        <codemirror v-model="reqBody" :options="cmOptions" ref="reqBodyCodemirrorRef" height="6" />
-                                                        <!-- <el-input
-                                                            type="textarea"
-                                                            :autosize="{minRows: 4, maxRows: 100}"
-                                                            spellcheck="false"
-                                                            placeholder="请输入内容"
-                                                            v-model="reqBody">
-                                                        </el-input> -->
-                                                    </div>
-                                                </el-collapse-item>
-                                            </el-collapse>
-                                        </div><!-- panel-requset -->
-                                    </div><!-- request-payload -->
-
-                                    <div class="request-response">
-                                        <el-card class="box-card">
-                                            <div slot="header" class="clearfix">
-                                                <span>Response</span>
-                                                <el-tag size="medium" class="ml-2" type="warning" v-if="respStatus">Status:{{respStatus}}</el-tag>
-                                                <el-tag size="medium" class="ml-1" v-if="respExtime">Time:{{respExtime}}ms</el-tag>
-                                                <el-tag size="medium" class="ml-1 sbtn" type="info" v-if="respHeader" @click="switchShowRespHeaders">Headers</el-tag>
-                                            </div>
-                                            <div class="result" v-if="!showRespHeaders">
-                                                <json-viewer
-                                                    :value="respDataJson"
-                                                    :expand-depth=5
-                                                    copyable
-                                                    v-if="respDataJson">
-                                                    <!-- https://github.com/chenfengjw163/vue-json-viewer#example -->
-                                                </json-viewer>
-                                                <div v-if="!respDataJson">
-                                                    <div class="response-datatext-cbtn">
-                                                        <el-button-group>
-                                                            <el-button plain size="mini" @click="changeRespDataViewMode('raw')">Raw</el-button>
-                                                            <el-button plain size="mini" @click="changeRespDataViewMode('preview')">Preview</el-button>
-                                                        </el-button-group>
-                                                    </div>
-                                                    <div class="response-datatext" v-show="respDataViewMode=='raw'">{{respData}}</div>
-                                                    <div class="response-datatext" v-show="respDataViewMode=='preview'" :id="'R_iframeVessel'+etabItem.name"><iframe class="R_iframe" :id="'R_iframe'+etabItem.name" name="R_iframe" width="100%" height="100%" src="about:blank" frameborder="0" seamless=""></iframe></div>
-                                                </div>
-                                            </div>
-                                            <div class="result" v-if="showRespHeaders">
-                                                <div class="response-headers" v-html="respHeader"></div>
-                                            </div>
-                                        </el-card>
-                                    </div>
-                                </div>
-                            </div><!-- panel -->
+                        <div :elem-index="index"></div>
                         </el-tab-pane>
                     </el-tabs>
+                    <div class="main-area panel" >
+                        <div class="panel-title">
+                            <el-row v-if="helpTipShow">
+                                <div class="mb-2">
+                                    <el-alert
+                                        title="快捷键：Ctrl+S 保存　Alt+Enter 发送　Alt+Q 关闭标签"
+                                        type="info"
+                                        show-icon>
+                                    </el-alert>
+                                </div>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="18">
+                                    <div class="project-title">
+                                        <el-input size="small" placeholder="请输接口名称" v-model="apiname" class="input-with-select">
+                                            <el-select v-model="reqscheme" slot="prepend" placeholder="请选择">
+                                                <el-option label="HTTP" value="HTTP"></el-option>
+                                                <el-option label="WEBSOCKET" value="WEBSOCKET"></el-option>
+                                            </el-select>
+                                        </el-input>
+                                    </div>
+                                </el-col>
+                                <el-col :span="6" class="pl-3">
+                                    分类：
+                                    <el-select size="small" v-model="cateid" placeholder="请选择">
+                                        <el-option label="请选择" value="0"></el-option>
+                                        <el-option v-for="(cate, idx) in subCates" :key="idx" :label="cate.name" :value="cate.id"></el-option>
+                                    </el-select>
+                                </el-col>
+                            </el-row>
+                        </div><!-- panel-title -->
+                        <div class="panel-content">
+                            <div class="request-uri">
+                                <el-row>
+                                    <el-col :span="22">
+                                            <el-autocomplete
+                                            class="input-with-select"
+                                            v-model="apiuri"
+                                            :fetch-suggestions="queryApiuri"
+                                            placeholder="请输入接口地址"
+                                            spellcheck="false"
+                                        >
+                                            <el-select v-model="reqmethod" slot="prepend" placeholder="请选择">
+                                                <el-option label="POST" value="POST"></el-option>
+                                                <el-option label="GET" value="GET"></el-option>
+                                                <el-option label="PUT" value="PUT"></el-option>
+                                                <el-option label="PATCH" value="PATCH"></el-option>
+                                                <el-option label="DELETE" value="DELETE"></el-option>
+                                                <el-option label="COPY" value="COPY"></el-option>
+                                                <el-option label="HEAD" value="HEAD"></el-option>
+                                                <el-option label="OPTIONS" value="OPTIONS"></el-option>
+                                                <el-option label="LINK" value="LINK"></el-option>
+                                                <el-option label="UNLINK" value="UNLINK"></el-option>
+                                                <el-option label="PROPFIND" value="PROPFIND"></el-option>
+                                                <el-option label="VIEW" value="VIEW"></el-option>
+                                            </el-select>
+                                            <el-button slot="append" icon="el-icon-s-promotion" @click="sendForm">发送</el-button>
+                                        </el-autocomplete>
+                                    </el-col>
+                                    <el-col :span="2">
+                                        <div class="pl-2"><el-button icon="el-icon-s-claim" @click="saveForm">保存</el-button></div>
+                                    </el-col>
+                                    <div class="mclear"></div>
+                                </el-row>
+                            </div>
+
+                            <div class="request-payload mt-1">
+                                <div class="panel-docs">
+                                    <el-collapse v-model="collapseDocsAcitves" @change="collapseDocsChange" class="collapse-box">
+                                        <el-collapse-item name="doc-body">
+                                            <template slot="title">
+                                                <el-tag size="medium" type="warning">文档</el-tag>
+                                            </template>
+                                            <div class="mt-1">
+                                                <codemirror v-model="docBody" :options="docCmOptions" ref="docBodyCodemirrorRef" height="20" />
+                                            </div>
+                                        </el-collapse-item>
+                                    </el-collapse>
+                                </div>
+
+                                <div class="panel-requset">
+                                    
+                                    <div class="box01">
+                                        <div class="v1">
+                                            <el-checkbox label="Header" v-model="reqHeaderChk"></el-checkbox>
+                                            <el-checkbox label="Body" v-model="reqBodyChk"></el-checkbox>
+                                        </div>
+                                        <div class="v2">
+                                            <el-select size="mini" v-model="bodytype" placeholder="请选择">
+                                                <el-option label="x-www-form-urlencoded" value="x-www-form-urlencoded"></el-option>
+                                                <el-option label="form-data" value="form-data"></el-option>
+                                                <el-option label="raw" value="raw"></el-option>
+                                            </el-select>
+                                        </div>
+                                        <div class="mclear"></div>
+                                    </div>
+
+                                    <el-collapse v-model="collapseAcitves" class="collapse-box">
+                                        <el-collapse-item name="req-header" v-if="reqHeaderChk">
+                                            <template slot="title">
+                                                <el-tag size="medium">Header</el-tag>
+                                            </template>
+                                            <div>
+                                                <el-input
+                                                    type="textarea"
+                                                    :autosize="{minRows: 4, maxRows: 100}"
+                                                    spellcheck="false"
+                                                    placeholder="请输入内容"
+                                                    v-model="reqHeader">
+                                                </el-input>
+                                            </div>
+                                        </el-collapse-item>
+                                        <el-collapse-item name="req-body" class="req-body" v-if="reqBodyChk">
+                                            <template slot="title">
+                                                <el-tag size="medium" type="success" class="mr-2">Body</el-tag>
+                                                <el-select size="mini" v-model="bodyrawtype" placeholder="请选择" @change="bodytypeChange" v-if="bodytype=='raw'">
+                                                    <el-option label="JSON (application/json)" value="json"></el-option>
+                                                    <el-option label="XML (text/xml)" value="xml"></el-option>
+                                                    <el-option label="JavaScript (application/javascript)" value="javascript"></el-option>
+                                                    <el-option label="TEXT (text/plain)" value="plain"></el-option>
+                                                    <el-option label="HTML (text/html)" value="html"></el-option>
+                                                    <el-option label="TEXT" value="text"></el-option>
+                                                </el-select>
+                                            </template>
+                                            <div>
+                                                <codemirror v-model="reqBody" :options="cmOptions" ref="reqBodyCodemirrorRef" height="6" />
+                                                <!-- <el-input
+                                                    type="textarea"
+                                                    :autosize="{minRows: 4, maxRows: 100}"
+                                                    spellcheck="false"
+                                                    placeholder="请输入内容"
+                                                    v-model="reqBody">
+                                                </el-input> -->
+                                            </div>
+                                        </el-collapse-item>
+                                    </el-collapse>
+                                </div><!-- panel-requset -->
+                            </div><!-- request-payload -->
+
+                            <div class="request-response">
+                                <el-card class="box-card">
+                                    <div slot="header" class="clearfix">
+                                        <span>Response</span>
+                                        <el-tag size="medium" class="ml-2" type="warning" v-if="respStatus">Status:{{respStatus}}</el-tag>
+                                        <el-tag size="medium" class="ml-1" v-if="respExtime">Time:{{respExtime}}ms</el-tag>
+                                        <el-tag size="medium" class="ml-1 sbtn" type="info" v-if="respHeader" @click="switchShowRespHeaders">Headers</el-tag>
+                                    </div>
+                                    <div class="result" v-if="!showRespHeaders">
+                                        <json-viewer
+                                            :value="respDataJson"
+                                            :expand-depth=5
+                                            copyable
+                                            v-if="respDataJson">
+                                            <!-- https://github.com/chenfengjw163/vue-json-viewer#example -->
+                                        </json-viewer>
+                                        <div v-if="!respDataJson">
+                                            <div class="response-datatext-cbtn">
+                                                <el-button-group>
+                                                    <el-button plain size="mini" @click="changeRespDataViewMode('raw')">Raw</el-button>
+                                                    <el-button plain size="mini" @click="changeRespDataViewMode('preview')">Preview</el-button>
+                                                </el-button-group>
+                                            </div>
+                                            <div class="response-datatext" v-show="respDataViewMode=='raw'">{{respData}}</div>
+                                            <div class="response-datatext" v-show="respDataViewMode=='preview'" id="R_iframeVessel"><iframe class="R_iframe" id="R_iframe" name="R_iframe" width="100%" height="100%" src="about:blank" frameborder="0" seamless=""></iframe></div>
+                                        </div>
+                                    </div>
+                                    <div class="result" v-if="showRespHeaders">
+                                        <div class="response-headers" v-html="respHeader"></div>
+                                    </div>
+                                </el-card>
+                            </div>
+                        </div>
+                    </div><!-- panel -->
                 </el-main>
 
                 <el-dialog title="分类名称" width="20%" :visible.sync="catalogDialogVisible">
@@ -1048,11 +1049,18 @@ export default {
         },
         changeRespDataViewMode(mode) {
             if (mode == 'preview') {
+                // let ind = parseInt(this.mainTabsCurr)
+                // let iframeDoc = window.document.getElementById('R_iframe'+ind).contentDocument || window.document.frames['R_iframe'+ind].document
+                // iframeDoc.body.innerHTML = this.respData
+                // setTimeout(() => {
+                //     window.document.getElementById('R_iframeVessel'+ind).style.height = iframeDoc.body.scrollHeight+'px'
+                // }, 200)
+
                 let ind = parseInt(this.mainTabsCurr)
-                let iframeDoc = window.document.getElementById('R_iframe'+ind).contentDocument || window.document.frames['R_iframe'+ind].document
+                let iframeDoc = window.document.getElementById('R_iframe').contentDocument || window.document.frames['R_iframe'].document
                 iframeDoc.body.innerHTML = this.respData
                 setTimeout(() => {
-                    window.document.getElementById('R_iframeVessel'+ind).style.height = iframeDoc.body.scrollHeight+'px'
+                    window.document.getElementById('R_iframeVessel').style.height = iframeDoc.body.scrollHeight+'px'
                 }, 200)
             }
             this.respDataViewMode = mode
