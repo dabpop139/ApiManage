@@ -209,7 +209,9 @@
                                             
                                         </el-tab-pane>
                                         <el-tab-pane label="文档" name="docs" class="panel-docs">
-                                            <div class="mt-1">接口字段文档</div>
+                                            <div class="mt-1">
+                                                <codemirror v-model="docBody" :options="docCmOptions" height="20" />
+                                            </div>
                                         </el-tab-pane>
                                     </el-tabs>
 
@@ -361,6 +363,16 @@ export default {
                 lineNumbers: true,
                 line: true,
                 lineWrapping: true,
+                matchBrackets: true,
+                keyMap: 'sublime',
+            },
+            docCmOptions: {
+                tabSize: 4,
+                mode: 'javascript',
+                lineNumbers: true,
+                line: true,
+                lineWrapping: true,
+                matchBrackets: true,
                 keyMap: 'sublime',
             },
 
@@ -394,6 +406,7 @@ export default {
 
             reqHeader: '',
             reqBody: '',
+            docBody: '',
 
             showRespHeaders: false,
             respStatus: '',
@@ -641,6 +654,7 @@ export default {
 
             this.reqHeader = ''
             this.reqBody = ''
+            this.docbody = ''
 
             this.apiuriSuggesData = []
         },
@@ -673,7 +687,8 @@ export default {
             jsonData.rbody_chk = this.reqBodyChk
 
             jsonData.rheader = this.reqHeader
-            jsonData.rbody = this.reqBody
+            jsonData.rbody = this.reqBody == null ? '' : this.reqBody
+            jsonData.docbody = this.docBody == null ? '' : this.docBody
 
             jsonData.respraw = this.respData
             jsonData.apiuri_suggesdata = this.apiuriSuggesData
@@ -698,7 +713,8 @@ export default {
             this.reqBodyChk = data.rbody_chk
 
             this.reqHeader = data.rheader
-            this.reqBody = data.rbody
+            this.reqBody = data.rbody == null ? '' : data.rbody
+            this.docBody = data.docbody == null ? '' : data.docbody
 
             this.respData = data.respraw
             this.apiuriSuggesData = data.apiuri_suggesdata
@@ -925,6 +941,7 @@ export default {
 
                     rheader: this.reqHeader,
                     rbody: this.reqBody,
+                    docbody: this.docBody,
                 },
             }, 'POST',
             response => {

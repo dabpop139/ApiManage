@@ -198,6 +198,12 @@ button:focus,button:hover{text-decoration:none;outline:0 !important;}
 .main-area .panel-content .request-uri .input-with-select .el-select .el-input input{color: #F47B34;}
 .main-area .panel-content .request-uri .input-with-select>.el-input-group>.el-input__inner{font-size: 13px;}
 
+.main-area .panel-content .request-payload .panel-docs .CodeMirror{font-size: 13px; line-height: 1.4em; height: auto !important; padding-bottom: 50px;}
+.main-area .panel-content .request-payload .panel-docs .CodeMirror-wrap pre.CodeMirror-line{font-family: Consolas, "Microsoft YaHei", "Liberation Mono", Menlo, Courier, monospace !important;}
+.main-area .panel-content .request-payload .panel-docs .CodeMirror-wrap pre.CodeMirror-line-like{font-family: Consolas, "Microsoft YaHei", "Liberation Mono", Menlo, Courier, monospace !important;}
+
+.main-area .panel-content .request-payload .panel-docs .CodeMirror .CodeMirror-scroll{overflow-x: hidden !important; min-height: 50px; border: 1px solid #DCDFE6; border-radius: 4px; margin-right: 0px;}
+
 .main-area .panel-content .request-payload .panel-requset .box01{margin-top: 10px;}
 .main-area .panel-content .request-payload .panel-requset .box01 .v1{float: left;}
 .main-area .panel-content .request-payload .panel-requset .box01 .v2{float: right;}
