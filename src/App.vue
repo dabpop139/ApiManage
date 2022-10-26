@@ -13,7 +13,7 @@
             </el-header>
             <el-container class="fheight">
                 <el-aside class="easide" width="230px">
-                    <div class="el-scrollbar">
+                    <el-scrollbar class="el-scrollbar">
                         <div class="project-info">
                             <div class="project-title">
                                 <el-select v-model="projectid" @change="projectChange">
@@ -79,7 +79,7 @@
                         </div><!-- api-catalog -->
                         <div class="mt-4">&nbsp;</div>
                         <div class="mt-4">&nbsp;</div>
-                    </div><!-- el-scrollbar -->
+                    </el-scrollbar><!-- el-scrollbar -->
                 </el-aside>
                 <el-main class="emain">
                     <!-- <keep-alive>
@@ -298,7 +298,7 @@
 import COMJS from '@/libs/common'
 import utils from '@/libs/utils'
 import {
-    Container, Header, Aside, Main,
+    Container, Scrollbar, Header, Aside, Main,
     Row, Col,
     Loading, Message, MessageBox, Dialog,
     Menu, Submenu, MenuItemGroup, MenuItem,
@@ -317,6 +317,7 @@ export default {
     name: 'app',
     components: {
         elContainer: Container,
+        elScrollbar: Scrollbar,
         elHeader: Header,
         elAside: Aside,
         elMain: Main,

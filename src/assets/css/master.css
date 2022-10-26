@@ -147,7 +147,7 @@ button:focus,button:hover{text-decoration:none;outline:0 !important;}
 .disflex { display: flex; }
 .flex.center { align-items: center; }
 
-#app{height: 100%;}
+#app{height: 100vh;}
 .fheight{height: 100%;}
 .eheader{background-color:#424242;border-color:#353644;color:#e0e0e0;height:40px!important;-webkit-box-shadow:0 0 6px 0 #2e2e2e;box-shadow:0 0 6px 0 #2e2e2e;z-index: 150;padding-left:10px;padding-right:10px}
 .eheader .layout-top .left-opts { width: 300px; }
@@ -155,7 +155,9 @@ button:focus,button:hover{text-decoration:none;outline:0 !important;}
 .eheader .elogo{margin-top: 4px;}
 .eheader .elogo button{font-size: 14px; border: 0px; background-color:#F47023;}
 
-.easide {height: 100%; background-color: #424242;}
+.easide {background-color: #424242;}
+.easide .el-scrollbar{height: 100%;}
+.easide .el-scrollbar .el-scrollbar__wrap {overflow-x: hidden;}
 .easide .project-info{border-bottom:4px solid #2e2e2e;padding:8px 13px;color:#FFFFFF;}
 .easide .project-info .project-title{min-height: 20px;}
 .easide .project-info .project-title .el-select .el-input input{ color:#FFFFFF; font-size: 15px; border: 0px; background: none;}
@@ -186,8 +188,8 @@ button:focus,button:hover{text-decoration:none;outline:0 !important;}
 .easide .api-catalog .el-menu .el-submenu__title .el-dropdown{margin-top: -8px;}
 .easide .api-catalog .el-menu .el-menu-item{font-size: 12px;height: 32px;line-height: 32px;padding-left:10px !important;}
 .easide .api-catalog .el-menu .el-menu-item .el-icon{font-size: 13px;}
-.easide .api-catalog .method{font-weight:bolder;margin-right:5px;display:inline-block;transform:scale(.8);color:#009688;text-align:center;width:30px;cursor:pointer}
-.easide .api-catalog .name{display:inline-block;width:132px;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.easide .api-catalog .method{font-weight:bolder;margin-right:0px;display:inline-block;transform:scale(0.9);color:#009688;letter-spacing:0.5em;text-align:left;width:9px;overflow:hidden;cursor:pointer}
+.easide .api-catalog .name{display:inline-block;width:170px;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
 .easide .api-catalog .setting{display:inline-block;width:20px;text-align: center;position: relative;cursor:pointer}
 
 .main-area .project-title .el-select .el-input{width:130px;}
